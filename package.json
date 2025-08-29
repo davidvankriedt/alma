@@ -1,0 +1,19 @@
+{
+  "name": "alma",
+  "version": "1.0.0",
+  "description": "A decentralised, location-based, music distributor app.",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidvankriedt/alma.git"
+  },
+  "author": "David Van Kriedt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davidvankriedt/alma/issues"
+  },
+  "homepage": "https://github.com/davidvankriedt/alma#readme"
+}
