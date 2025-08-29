@@ -13,18 +13,20 @@ contract SongRegistry {
     uint256 nextSongId;
     mapping(uint256 => Song) public allSongs;
     mapping(uint256 => mapping(address => bool)) public hasAccess;
+    mapping(uint256 => mapping(address => bool)) public isRadio;
 
     event SongRegistered(uint256 indexed songId, address indexed artist, string title);
     event SongUnlocked(uint256 indexed songId, address indexed listener);
+    event RadioRegistered(uint256 indexed songId, address indexed host);
 
     error MissingSongTitle(string _title);
     error MissingIpfsHash(string _ipfsHash);
     error InsufficientPayment(uint256 _payment, uint256 _price);
     error SongDoesNotExist();
     error SongAlreadyUnlocked(uint256 _songId, address _listener);
+    error AlreadyARadio(address _user, uint256 _songId);
     
     function registerSong(string memory _title, string memory _ipfsHash, uint256 _price) external {
-        // require
         require(bytes(_title).length > 0, MissingSongTitle(_title));
         require(bytes(_ipfsHash).length > 0, MissingIpfsHash(_ipfsHash));
 
@@ -55,6 +57,17 @@ contract SongRegistry {
 
         // pay artist
         song.artist.transfer(msg.value);
+    }
+
+    function registerAsRadio(uint256 _songId) external {
+        Song storage song = allSongs[_songId];
+        require(hasAccess[_songId][msg.sender], DoesNotHaveAccess());
+        require(song.artist != address(0), SongDoesNotExist());
+        require(!isRadio[_songId][msg.sender], AlreadyARadio(msg.sender, _songId));
+
+        isRadio[_songId][msg.sender] = true;
+
+        emit RadioRegistered(_songId, msg.sender);
     }
 
     function userHasAccess(uint256 _songId, address _user) external view returns (bool) {
